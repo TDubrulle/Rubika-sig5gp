@@ -11,17 +11,17 @@ namespace CardBattle
         static void Main(string[] args)
         {
             var spadesAce = new Card(Values.Ace, Suit.Spades);
-            
-            Console.WriteLine("I created a card: " + spadesAce);
+            var spadesAce2 = new Card(Values.Seven, Suit.Spades);
+            Console.WriteLine(spadesAce.Equals(spadesAce2));
 
             var dealer = new CardDealer();
 
-            for (var i = 0; i < 100; i++)
+            /*for (var i = 0; i < 100; i++)
             {
                 var randomCard = dealer.RandomCard();
 
                 Console.WriteLine("I drew a card: " + randomCard);
-            }
+            }*/
 
             Console.ReadLine();
         }
