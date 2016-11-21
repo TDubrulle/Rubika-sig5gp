@@ -11,8 +11,18 @@ namespace CardBattle
     {
         static void Main(string[] args)
         {
+            MaintTournament();
             //MainCard();
-            MainFibo();
+            //MainFibo();
+        }
+
+        private static void MaintTournament()
+        {
+            var orga = new TournamentOrganiser(new IPlayer[] { new MaxValuePlayer(), new MaxValuePlayer() }, new CardDealer());
+
+            orga.PlayTournament();
+
+            Console.ReadLine();
         }
 
         private static void MainFibo()
