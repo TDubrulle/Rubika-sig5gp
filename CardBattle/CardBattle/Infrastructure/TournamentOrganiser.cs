@@ -1,10 +1,11 @@
 ﻿using CardBattle.Models;
+using CardBattle.Player;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CardBattle
+namespace CardBattle.Game
 {
     public class TournamentOrganiser
     {
@@ -15,7 +16,7 @@ namespace CardBattle
         {
             get
             {
-                return _scores.AsEnumerable();
+                return _scores.AsReadOnly();
             }
         }
 

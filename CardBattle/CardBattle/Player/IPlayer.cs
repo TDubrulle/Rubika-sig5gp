@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CardBattle
+namespace CardBattle.Player
 {
     public interface IPlayer
     {

@@ -4,6 +4,10 @@ using System.Linq;
 using System.Text;
 using CardBattle.Models;
 using System.IO;
+using Autofac;
+using CardBattle.Game;
+using CardBattle.Player;
+using CardBattle.Infrastructure;
 
 namespace CardBattle
 {
@@ -18,19 +22,27 @@ namespace CardBattle
 
         private static void MaintTournament()
         {
-            var orga = new TournamentOrganiser(new IPlayer[] {
-                    new MaxValuePlayer(), new Models.Game.TPlayer(),
-                     }, new CardDealer());
-            for (int j = 0; j < 1000; j++) {
+            var builder = new ContainerBuilder();
+            builder.RegisterType<CardDealer>();
+            builder.RegisterType<RandomProvider>().SingleInstance();
+            builder.RegisterInstance(new ConsoleLogger { MinLevel = LogLevel.None }).As<ILogger>().SingleInstance();
+            builder.RegisterAssemblyTypes(typeof(Program).Assembly).Where(t => t.IsAssignableTo<IPlayer>()).As<IPlayer>();
+            builder.RegisterType<TournamentOrganiser>();
 
-                orga.PlayTournament();
-                List<int> scores = orga.Scores.ToList();
-                for (int i = 0; i < scores.Count; ++i)
-                {
-                    Console.WriteLine(scores[i]);
-                }
-                Console.ReadLine();
-            }
+            var container = builder.Build();
+
+            //var dealer = container.Resolve<CardDealer>();
+
+            var orga = container.Resolve<TournamentOrganiser>();
+                //new TournamentOrganiser(
+                //new IPlayer[]
+                //{ new MaxValuePlayer(), new MaxValuePlayer() },
+                //dealer
+                //);
+
+            orga.PlayTournament();
+
+            Console.ReadLine();
         }
 
         private static void MainFibo()

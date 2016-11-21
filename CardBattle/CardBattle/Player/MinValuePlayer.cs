@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using CardBattle.Models;
 
-namespace CardBattle
+namespace CardBattle.Player
 {
-    public class MaxValuePlayer : IPlayer
+    public class MinValuePlayer : IPlayer
     {
         public string Author
         {
@@ -20,7 +20,7 @@ namespace CardBattle
         {
             get
             {
-                return "MaxValue";
+                return "MinValue";
             }
         }
 
@@ -36,7 +36,7 @@ namespace CardBattle
 
         public Card PlayCard()
         {
-            var result = _hand.Max();
+            var result = _hand.Min();
             _hand.Remove(result);
             return result;
         }

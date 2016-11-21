@@ -1,10 +1,11 @@
 ﻿using CardBattle.Models;
+using CardBattle.Player;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace CardBattle
+namespace CardBattle.Game
 {
     public class Game
     {
@@ -64,6 +65,7 @@ namespace CardBattle
                     throw new InvalidOperationException(_players[i].Name + "is a cheater!");
                 }
 
+                Console.WriteLine(card);
                 cardsPlayed.Add(card);
             }
 
@@ -73,6 +75,7 @@ namespace CardBattle
             {
                 player.ReceiveFoldResult(result);
             }
+            Console.WriteLine("[" + string.Join(", ", result.CardsPlayed.Select(c => c.ToString()).ToArray()) + "] => " + result.Winner);
             return result;
         }
     }
