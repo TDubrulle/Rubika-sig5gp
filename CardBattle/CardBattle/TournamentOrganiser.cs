@@ -39,7 +39,7 @@ namespace CardBattle
             _scores = new List<int>(players.Select(p => 0));
 
             HandSize = 5;
-            GamesNumber = 100;
+            GamesNumber = 1000;
         }
 
         public void PlayTournament()

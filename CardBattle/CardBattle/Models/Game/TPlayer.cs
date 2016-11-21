@@ -20,10 +20,15 @@ namespace CardBattle.Models.Game
 
         private const string name = "Barbas le fou";
         private const string author = "Thomas Dubrulle";
-        private int position = -1;
-        private int playerCount = -1;
+        #region table
+        public List<int> playersScore = new List<int>();
+        public int position = -1;
+        public int playerCount = -1;
+        public int foldsLeft = 0;
+        #endregion
         private TPlayerState currentState;
 
+        #region IPlayer implementation
         public string Author
         {
             get {
@@ -42,13 +47,16 @@ namespace CardBattle.Models.Game
         {
             hand = cards.ToList();
             removeGameCards(cards);
+            foldsLeft = cards.Count();
+            currentState = new TThoughtfulPlayerState();
         }
+
         public void Initialize(int playerCount, int position)
         {
             resetRemainingGameCards();
-            currentState = new TThoughtfulPlayerState();
             this.position = position;
             this.playerCount = playerCount;
+            initPlayersScores(playerCount);
         }
 
         public Card PlayCard()
@@ -56,13 +64,42 @@ namespace CardBattle.Models.Game
             if(hand.Count == 0) { throw new IndexOutOfRangeException("Cannot play cards without any in hand!"); }
             currentState = currentState.changeState(this);
             Card t = currentState.chooseCard(this);
+            hand.Remove(t);
+            foldsLeft--;
             return t;
         }
 
         public void ReceiveFoldResult(FoldResult result)
         {
-
+            playersScore[result.Winner]++;
+            removeGameCards(result.CardsPlayed);
         }
+        #endregion
+
+        #region players'scores
+        public void initPlayersScores(int nPlayers)
+        {
+
+            this.playersScore = new List<int>(playerCount);
+            for (int i = 0; i < nPlayers; ++i)
+            {
+                playersScore.Add(0);
+            }
+        }
+
+        public int getHighestEnemyScore()
+        {
+            int max = 0;
+            for(int i = 0; i < playersScore.Count; ++i)
+            {
+                if(max < playersScore[i] && i != this.position)
+                {
+                    max = playersScore[i];
+                }
+            }
+            return max;
+        }
+        #endregion
 
         #region handCards
         public Card getHighestCard()
@@ -127,12 +164,17 @@ namespace CardBattle.Models.Game
                 return true;
             } else
             {
-                //Else we choose randomly, based on our probability to win.
                 float winningProbability = (float)higherCardsNumber / (float)remainingGameCards.Count;
+                //We don't bother trying if winning chance is less than 10%.
+                if (winningProbability < 0.10f) return false;
+                //Else we choose randomly, based on our probability to win.
                 float decision = 1f - (float)_rand.NextDouble();
-                for(int i = 1; i < playerCount; ++i)
+                float decisionBaseValue = decision;
+
+                for (int i = 1; i < playerCount; ++i)
                 {
-                    decision = decision * (decision + (1f-decision) * 0.5f);
+                    //We reduce the chance this decision will be taken based on the number of adversaries. 
+                    decision = decision * decisionBaseValue;
                 }
                 if (decision > winningProbability)
                 {

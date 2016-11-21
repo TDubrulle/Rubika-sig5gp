@@ -18,11 +18,19 @@ namespace CardBattle
 
         private static void MaintTournament()
         {
-            var orga = new TournamentOrganiser(new IPlayer[] { new MaxValuePlayer(), new MaxValuePlayer() }, new CardDealer());
+            var orga = new TournamentOrganiser(new IPlayer[] {
+                    new MaxValuePlayer(), new Models.Game.TPlayer(),
+                     }, new CardDealer());
+            for (int j = 0; j < 1000; j++) {
 
-            orga.PlayTournament();
-
-            Console.ReadLine();
+                orga.PlayTournament();
+                List<int> scores = orga.Scores.ToList();
+                for (int i = 0; i < scores.Count; ++i)
+                {
+                    Console.WriteLine(scores[i]);
+                }
+                Console.ReadLine();
+            }
         }
 
         private static void MainFibo()
